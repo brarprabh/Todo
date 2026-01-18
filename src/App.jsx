@@ -9,7 +9,13 @@ function App() {
 function addTodo() {
   if (text.trim() === "") return; 
 
-  setTodos([...todos, text]);
+  const newTodo = { 
+    id : Date.now(),
+    text : text,
+    completed:false,
+  };
+
+  setTodos([...todos, newTodo]);
   setText("");
 }
 
@@ -23,8 +29,8 @@ function addTodo() {
        />
 
     <ul>
-      {todos.map((todo, index) => ( // key -> helps know the index and use of map -> used for traversal 
-        <li key={index}>{todo}</li>
+      {todos.map((todo) => ( // key -> helps know the index and use of map -> used for traversal 
+        <li key={todo.id}>{todo.text}</li>
       ))}
     </ul>
 
