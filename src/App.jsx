@@ -41,36 +41,40 @@ function deleteTodo(id) {    //filter the one and delete it
 }
 
 
-  return (
-    <div>
-      <Header/>
-      <TodoInput // props are added
-      text = {text}
+ return (
+  <div className="app-container">
+    <Header />
+    <TodoInput
+      text={text}
       setText={setText}
       addTodo={addTodo}
-       />
+    />
 
-    <ul>
-      {todos.map((todo) => ( // key -> helps know the index and use of map -> used for traversal 
-        <li key={todo.id}>
+ 
+  {todos.length === 0 && (
+  <p style={{ textAlign: "center", color: "#6b7280" }}>
+    No todos yet 👀
+  </p>
+)}  
+
+    <ul className="todo-list">
+      {todos.map((todo) => (
+        <li key={todo.id} className="todo-item">
           <span
-          onClick={() => toggleTodo(todo.id)}
-          style={{
-          textDecoration: todo.completed ? "line-through" : "none",
-           cursor: "pointer",
-          }}
+            className={`todo-text ${todo.completed ? "completed" : ""}`}
+            onClick={() => toggleTodo(todo.id)}
           >
-         { todo.text}
-         </span>
-         <button onClick={() => deleteTodo(todo.id)}>
-          Delete
-          </button></li>
+            {todo.text}
+          </span>
+
+          <button onClick={() => deleteTodo(todo.id)}>
+            Delete
+          </button>
+        </li>
       ))}
     </ul>
+  </div>
+);
 
-    </div>
-  );
 }
-
-
 export default App;
