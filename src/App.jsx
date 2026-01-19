@@ -1,34 +1,36 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
+import Header from "./Header"
+import TodoInput from "./TodoInput"
 
-
-
-import Header from './Header';
-import TodoInput from './TodoInput';
 
 function App() {
+  // 🔹 Ref
+  const isFirstRender = useRef(true);
 
-const [text, setText] = useState("");
+  // 🔹 State
+  const [text, setText] = useState("");
   const [todos, setTodos] = useState([]);
 
-const isFirstRender = useRef(true);
 
 
-useEffect(() => {
-  try {
-    const savedTodos = localStorage.getItem("todos");
+  // Load todos from localStorage on first render
+  useEffect(() => {
+    try {
+      const savedTodos = localStorage.getItem("todos");
 
-    if (savedTodos) {
-      const parsedTodos = JSON.parse(savedTodos);
-      setTodos(parsedTodos);
+      if (savedTodos) {
+        const parsedTodos = JSON.parse(savedTodos);
+        if (Array.isArray(parsedTodos)) {
+          setTodos(parsedTodos);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load todos:", error);
     }
-  } catch (error) {
-    console.error("Error loading todos from localStorage", error);
-  }
-}, []);
+  }, []);
 
 
+  // Save todos to localStorage (skip first render)
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -45,19 +47,19 @@ useEffect(() => {
 function addTodo() {
   if (text.trim() === "") return; 
 
+
   const newTodo = { 
     id : Date.now(),
     text : text,
     completed:false,
   };
 
-  
-
   setTodos([...todos, newTodo]);
   setText("");
 }
 
-function deleteTodo(id) {    //filter the one and delete it
+
+function deleteTodo(id) {    //filter the diff id and delete if it it has same id
     const updatedTodos = todos.filter((todo) => todo.id !== id);
     setTodos(updatedTodos); // we return a new array rather than changing the previous one..
   }
@@ -79,7 +81,8 @@ function deleteTodo(id) {    //filter the one and delete it
 
  return (
   <div className="app-container">
-    <Header />
+    <Header />   
+
     <TodoInput
       text={text}
       setText={setText}
@@ -91,7 +94,7 @@ function deleteTodo(id) {    //filter the one and delete it
   <p style={{ textAlign: "center", color: "#6b7280" }}>
     No todos yet 👀
   </p>
-)}  
+       )}  
 
     <ul className="todo-list">
       {todos.map((todo) => (
