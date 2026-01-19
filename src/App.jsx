@@ -1,11 +1,47 @@
+import { useEffect } from 'react';
 import { useState } from 'react';
+import { useRef } from 'react';
+
+
+
 import Header from './Header';
 import TodoInput from './TodoInput';
 
 function App() {
-  const [text, setText] = useState("");
+
+const [text, setText] = useState("");
   const [todos, setTodos] = useState([]);
 
+const isFirstRender = useRef(true);
+
+
+useEffect(() => {
+  try {
+    const savedTodos = localStorage.getItem("todos");
+
+    if (savedTodos) {
+      const parsedTodos = JSON.parse(savedTodos);
+      setTodos(parsedTodos);
+    }
+  } catch (error) {
+    console.error("Error loading todos from localStorage", error);
+  }
+}, []);
+
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
+
+
+
+  
 function addTodo() {
   if (text.trim() === "") return; 
 
